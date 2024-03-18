@@ -1,30 +1,55 @@
-import requests
-import json
+-- Define the maximum time to wait for the event (in seconds)
+local maxWaitTime = 10
 
-def send_discord_message(webhook_url, message):
-    data = {
-        "content": message
+-- Define the interval for checking the event (in seconds)
+local checkInterval = 1
+
+-- Get the start time
+local startTime = tick()
+
+-- Define a function to handle the event
+local function handleDoggyCaught(player, doggyName)
+    -- Send a Discord webhook notification
+    local HttpService = game:GetService("HttpService")
+    local webhookUrl = 'https://discord.com/api/webhooks/1203201720382005288/-pPXEyX8bv3ukVFcV_Oa727oEX7Xv6g7zL0SmVX6Sn03vfgWW5tBQ-WDfIFPNIjWiSqL'
+    local data = {
+        content = "Congratulations, " .. player.Name .. ", you caught a " .. doggyName .. "!"
     }
-    headers = {
-        "Content-Type": "application/json"
+    local headers = {
+        ["Content-Type"] = "application/json"
     }
-    response = requests.post(webhook_url, data=json.dumps(data), headers=headers)
-    if response.status_code == 200:
-        print("Nachricht erfolgreich gesendet.")
-    else:
-        print("Fehler beim Senden der Nachricht:", response.text)
+    HttpService:PostAsync(webhookUrl, HttpService:JSONEncode(data), Enum.HttpContentType.ApplicationJson)
+end
 
-# Ersetzen Sie 'WEBHOOK_URL' durch den tatsächlichen Webhook-URL Ihres Discord-Nachrichtenkanals
-webhook_url = 'https://discord.com/api/webhooks/1203201720382005288/-pPXEyX8bv3ukVFcV_Oa727oEX7Xv6g7zL0SmVX6Sn03vfgWW5tBQ-WDfIFPNIjWiSqL'
+-- Define a function to continuously check for the event
+local function checkForEvent()
+    -- Find the event
+    local doggyCaughtEvent = game.ServerScriptService:FindFirstChild("DoggyCaughtEvent")
+    
+    -- Check if the event was found
+    if doggyCaughtEvent then
+        -- Connect the handle function to the event
+        doggyCaughtEvent.OnServerEvent:Connect(handleDoggyCaught)
+        return true -- Return true if event found
+    else
+        -- Log a warning if the event was not found
+        warn("DoggyCaughtEvent not found.")
+        return false -- Return false if event not found
+    end
+end
 
-# Simulieren Sie den Fang eines Doggys (ersetzen Sie dies durch Ihre eigene Logik)
-def fange_doggy():
-    # Hier würde Ihre Logik stehen, um ein Doggy zu fangen
-    # Angenommen, das Doggy heißt "Rex"
-    doggy_name = "Rex"
-    return doggy_name
-
-# Benachrichtigung senden, wenn ein Doggy gefangen wird
-gefangenes_doggy = fange_doggy()
-message = f"Glückwunsch! Du hast ein Doggy gefangen: {gefangenes_doggy}"
-send_discord_message(webhook_url, message)
+-- Run an infinite loop to continuously check for the event
+while true do
+    -- Check for the event
+    if checkForEvent() then
+        break -- Exit loop if event found
+    end
+    
+    -- Check if maximum wait time is reached
+    if (tick() - startTime) >= maxWaitTime then
+        break -- Exit loop if maximum wait time reached
+    end
+    
+    -- Wait for the next interval before checking again
+    wait(checkInterval)
+end
