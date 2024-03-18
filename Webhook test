@@ -1,19 +1,11 @@
--- Define the maximum time to wait for the event (in seconds)
-local maxWaitTime = 10
+-- Webhook-URL für Discord
+local webhookUrl = 'https://discord.com/api/webhooks/1203201720382005288/-pPXEyX8bv3ukVFcV_Oa727oEX7Xv6g7zL0SmVX6Sn03vfgWW5tBQ-WDfIFPNIjWiSqL'
 
--- Define the interval for checking the event (in seconds)
-local checkInterval = 1
-
--- Get the start time
-local startTime = tick()
-
--- Define a function to handle the event
-local function handleDoggyCaught(player, doggyName)
-    -- Send a Discord webhook notification
+-- Funktion zum Senden einer Benachrichtigung über den Discord-Webhook
+local function sendNotification(petName)
     local HttpService = game:GetService("HttpService")
-    local webhookUrl = 'https://discord.com/api/webhooks/1203201720382005288/-pPXEyX8bv3ukVFcV_Oa727oEX7Xv6g7zL0SmVX6Sn03vfgWW5tBQ-WDfIFPNIjWiSqL'
     local data = {
-        content = "Congratulations, " .. player.Name .. ", you caught a " .. doggyName .. "!"
+        content = "Ein " .. petName .. " wurde gefangen!"
     }
     local headers = {
         ["Content-Type"] = "application/json"
@@ -21,35 +13,21 @@ local function handleDoggyCaught(player, doggyName)
     HttpService:PostAsync(webhookUrl, HttpService:JSONEncode(data), Enum.HttpContentType.ApplicationJson)
 end
 
--- Define a function to continuously check for the event
-local function checkForEvent()
-    -- Find the event
-    local doggyCaughtEvent = game.ServerScriptService:FindFirstChild("DoggyCaughtEvent")
-    
-    -- Check if the event was found
-    if doggyCaughtEvent then
-        -- Connect the handle function to the event
-        doggyCaughtEvent.OnServerEvent:Connect(handleDoggyCaught)
-        return true -- Return true if event found
-    else
-        -- Log a warning if the event was not found
-        warn("DoggyCaughtEvent not found.")
-        return false -- Return false if event not found
+-- Überprüfe, ob das Haustier "Doggy" gefangen wurde
+local function checkIfDoggyCaught()
+    -- Hier überprüfst du, ob das Haustier "Doggy" gefangen wurde.
+    -- Angenommen, es gibt eine Variable oder ein Ereignis, das angibt, ob "Doggy" gefangen wurde.
+    -- Du kannst diese Logik entsprechend deinem Spiel implementieren.
+    local doggyCaught = true -- Setze dies auf 'true', wenn "Doggy" gefangen wurde, ansonsten auf 'false'
+
+    -- Überprüfe, ob "Doggy" gefangen wurde und sende eine Benachrichtigung
+    if doggyCaught then
+        sendNotification("Doggy")
     end
 end
 
--- Run an infinite loop to continuously check for the event
+-- Überprüfe regelmäßig, ob "Doggy" gefangen wurde (z.B. alle 5 Sekunden)
 while true do
-    -- Check for the event
-    if checkForEvent() then
-        break -- Exit loop if event found
-    end
-    
-    -- Check if maximum wait time is reached
-    if (tick() - startTime) >= maxWaitTime then
-        break -- Exit loop if maximum wait time reached
-    end
-    
-    -- Wait for the next interval before checking again
-    wait(checkInterval)
+    checkIfDoggyCaught()
+    wait(5) -- Warte 5 Sekunden, bevor der nächste Check durchgeführt wird
 end
