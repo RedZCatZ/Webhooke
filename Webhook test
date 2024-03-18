@@ -1,0 +1,30 @@
+import requests
+import json
+
+def send_discord_message(webhook_url, message):
+    data = {
+        "content": message
+    }
+    headers = {
+        "Content-Type": "application/json"
+    }
+    response = requests.post(webhook_url, data=json.dumps(data), headers=headers)
+    if response.status_code == 200:
+        print("Nachricht erfolgreich gesendet.")
+    else:
+        print("Fehler beim Senden der Nachricht:", response.text)
+
+# Ersetzen Sie 'WEBHOOK_URL' durch den tatsächlichen Webhook-URL Ihres Discord-Nachrichtenkanals
+webhook_url = 'https://discord.com/api/webhooks/1203201720382005288/-pPXEyX8bv3ukVFcV_Oa727oEX7Xv6g7zL0SmVX6Sn03vfgWW5tBQ-WDfIFPNIjWiSqL'
+
+# Simulieren Sie den Fang eines Doggys (ersetzen Sie dies durch Ihre eigene Logik)
+def fange_doggy():
+    # Hier würde Ihre Logik stehen, um ein Doggy zu fangen
+    # Angenommen, das Doggy heißt "Rex"
+    doggy_name = "Rex"
+    return doggy_name
+
+# Benachrichtigung senden, wenn ein Doggy gefangen wird
+gefangenes_doggy = fange_doggy()
+message = f"Glückwunsch! Du hast ein Doggy gefangen: {gefangenes_doggy}"
+send_discord_message(webhook_url, message)
