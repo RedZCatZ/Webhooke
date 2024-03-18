@@ -1,4 +1,4 @@
--- Webhook-URL für Discord
+-- Ersetze 'DEINE_WEBHOOK_URL_HIER_EINFÜGEN' durch deine tatsächliche Webhook-URL für Discord.
 local webhookUrl = 'https://discord.com/api/webhooks/1203201720382005288/-pPXEyX8bv3ukVFcV_Oa727oEX7Xv6g7zL0SmVX6Sn03vfgWW5tBQ-WDfIFPNIjWiSqL'
 
 -- Funktion zum Senden einer Benachrichtigung über den Discord-Webhook
@@ -13,14 +13,10 @@ local function sendNotification(petName)
     HttpService:PostAsync(webhookUrl, HttpService:JSONEncode(data), Enum.HttpContentType.ApplicationJson)
 end
 
--- Überprüfe, ob das Haustier "Doggy" gefangen wurde
+-- Überprüfe, ob das Haustier "Doggy" gefangen wurde und sende eine Benachrichtigung
 local function checkIfDoggyCaught()
-    -- Hier überprüfst du, ob das Haustier "Doggy" gefangen wurde.
-    -- Angenommen, es gibt eine Variable oder ein Ereignis, das angibt, ob "Doggy" gefangen wurde.
-    -- Du kannst diese Logik entsprechend deinem Spiel implementieren.
     local doggyCaught = true -- Setze dies auf 'true', wenn "Doggy" gefangen wurde, ansonsten auf 'false'
-
-    -- Überprüfe, ob "Doggy" gefangen wurde und sende eine Benachrichtigung
+    
     if doggyCaught then
         sendNotification("Doggy")
     end
